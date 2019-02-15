@@ -1,0 +1,33 @@
+body {
+    background: $body;
+}
+
+.l-header-wrapper {
+    padding: 2em;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 500px;
+    width: 100%;
+}
+
+.l-header-title {
+    color: $header-title;
+    font-size: $font-40;
+    text-align: center;
+    margin-bottom: 1.5em;
+}
+
+.l-header-content {
+    text-align: center;
+}
+
+.l-header-content-image {
+    width: 100%;
+}
+
+.l-header-content-description {
+    color: $header-description;
+    font-size: $font-16;
+}

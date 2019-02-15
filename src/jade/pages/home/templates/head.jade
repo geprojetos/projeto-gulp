@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+html(lang="pt-br")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        meta(http-equiv="X-UA-Compatible", content="ie=edge")
+        title Modelo de projeto utilizando Gulp
+        
+        //- preload de font
+        //- link(rel="preload", href="fonts/font.txt", as="font", type="font/ttf")
+
+        //- preload image
+        //- link(rel="preload", as="image" href="images/logo-gulp.png")
+
+        //- carregamento assíncrono css
+        link(rel="preload", href="css/style.css", as="style", onload="this.rel='stylesheet'")
+
+        //- css inline
+        link(rel="stylesheet", href="_css/abouve-default.css", inline)
+
+        //- caso esteja desabilitado js carregar css normalmente
+        noscript
+            link(rel="stylesheet", href="css/style.css")
