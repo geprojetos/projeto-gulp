@@ -1,3 +1,5 @@
+@import '../base/variables.scss';
+
 @media(min-width: #{$small}) {
     .m-container {
         max-width: auto;

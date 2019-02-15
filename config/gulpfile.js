@@ -7,11 +7,12 @@ var gulp            = require('gulp'),
     cmq             = require('gulp-combine-mq'),
     autoprefixer    = require('gulp-autoprefixer'),
     cssmin          = require('gulp-cssmin'),
+    csslint         = require('gulp-csslint'),
     inlinesource    = require('gulp-inline-source'),
     concat          = require('gulp-concat'),
     gulpIf          = require('gulp-if'),
     imagemin        = require('gulp-imagemin'),
-    uglify =        require('gulp-uglify'),
+    uglify          = require('gulp-uglify'),
     clean           = require('gulp-clean');
 
     
@@ -54,6 +55,7 @@ const tmp = {
     html: '../public/_tmp/',
     htmlAll: '../public/_tmp/*.html',
     css: '../public/_tmp/_css/',
+    cssLint: '../public/_tmp/_lint/',
     abouveCss: '../public/_tmp/_css/abouve-default.css',
     styleCss: '../public/_tmp/_css/style.css',
     images: '../public/_tmp/_images/',
@@ -114,16 +116,12 @@ gulp.task('compile-jade', function () {
 });
 
 gulp.task('compile-abouveDefault', function(){
+    
     return gulp.src(srcScss.abouveDefault)
-        .pipe(sass({
-            outputStyle: 'expanded'
-        }).on('error', sass.logError))
+        .pipe(sass({outputStyle: 'expanded'}).on('error', sass.logError))
         .pipe(autoprefixer())
-        .pipe(cmq({
-            log: true,
-            beautify: true
-        }))
-        .pipe(gulp.dest(tmp.css));
+        .pipe(cmq({log: true,beautify: true}))
+        .pipe(gulp.dest(tmp.css))
 });
 
 gulp.task('compile-style', function(){
@@ -156,6 +154,26 @@ gulp.task('compile-lib', function() {
         .pipe(gulp.dest(tmp.lib))
 });
 
+
+
+
+// task lint
+gulp.task('lint-css', ['compile-abouveDefault', 'compile-style'], function() {
+    csslint.addFormatter('csslint-stylish');
+    
+    return gulp.src([
+            srcScss.base, 
+            srcScss.module, 
+            srcScss.state,
+            srcScss.theme,
+            srcScss.layout,
+        ])
+        .pipe(sass({outputStyle: 'expanded'}).on('error', sass.logError))
+        .pipe(autoprefixer())
+        .pipe(gulp.dest(tmp.cssLint))
+        .pipe(csslint())
+        .pipe(csslint.formatter('stylish'))
+});
 
 
 
@@ -192,6 +210,7 @@ gulp.task('development-lib', ['compile-lib'], function() {
         .pipe(gulpIf(prod(), uglify()))
         .pipe(gulpIf(prod(), gulp.dest(build.lib)))
 });
+
 
 
 
@@ -240,7 +259,7 @@ gulp.task('server-dev', ['build-dev'], function() {
             srcScss.theme,
             '../src/scss/layout/header.scss', 
         ], 
-        ['compile-abouveDefault']
+        ['compile-abouveDefault', 'lint-css']
     );
     gulp.watch(
         [

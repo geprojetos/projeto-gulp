@@ -19,11 +19,13 @@
   "devDependencies": {
     "browser-sync": "^2.24.7",
     "concurrently": "^3.4.0",
+    "csslint-stylish": "0.0.6",
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "^6.0.0",
     "gulp-clean": "^0.4.0",
     "gulp-combine-mq": "^0.4.0",
     "gulp-concat": "^2.6.1",
+    "gulp-csslint": "^1.0.1",
     "gulp-cssmin": "^0.2.0",
     "gulp-htmlmin": "^5.0.1",
     "gulp-if": "^2.0.2",
