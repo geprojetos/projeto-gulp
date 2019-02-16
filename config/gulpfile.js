@@ -1,6 +1,7 @@
 var gulp            = require('gulp'),
     browserSync     = require('browser-sync').create(),
     plumber         = require('gulp-plumber'),
+    notify          = require('gulp-notify'),
     jade            = require('gulp-jade'),
     htmlmin         = require('gulp-htmlmin'),
     sass            = require('gulp-sass'),
@@ -110,7 +111,13 @@ gulp.task('clean', function() {
 // task compile
 gulp.task('compile-jade', function () {
     return gulp.src(srcJade.pages)
-        .pipe(plumber())
+        .pipe(plumber({ errorHandler: function(err) {
+            notify.onError({
+                title: "Falha na compilação do Jade",
+                message: "Arquivo: " + err.path + '\n' + "Mensagem: " + err.message,
+                wait: true
+            })(err);
+        }}))
         .pipe(jade({ pretty: true }))        
         .pipe(gulp.dest(tmp.html));
 });
@@ -118,22 +125,29 @@ gulp.task('compile-jade', function () {
 gulp.task('compile-abouveDefault', function(){
     
     return gulp.src(srcScss.abouveDefault)
-        .pipe(sass({outputStyle: 'expanded'}).on('error', sass.logError))
+        .pipe(sass({outputStyle: 'expanded'}).on('error', function(err) {
+            notify.onError({
+                title: "Falha na compilação do Sass",
+                message: "Arquivo: " + err.relativePath + '\n' + "Mensagem: " + err.messageOriginal + '\n' + "Linha: " + err.messageFormatted,
+                wait: true
+            })(err);
+        }))
         .pipe(autoprefixer())
-        .pipe(cmq({log: true,beautify: true}))
+        .pipe(cmq({log: true, beautify: true}))
         .pipe(gulp.dest(tmp.css))
 });
 
 gulp.task('compile-style', function(){
     return gulp.src(srcScss.style)
-        .pipe(sass({
-            outputStyle: 'expanded'
-        }).on('error', sass.logError))
-        .pipe(autoprefixer())
-        .pipe(cmq({
-            log: true,
-            beautify: true
+        .pipe(sass({outputStyle: 'expanded'}).on('error', function(err) {
+            notify.onError({
+                title: "Falha na compilação do Sass",
+                message: "Arquivo: " + err.relativePath + '\n' + "Mensagem: " + err.messageOriginal,
+                wait: true
+            })(err);
         }))
+        .pipe(autoprefixer())
+        .pipe(cmq({log: true, beautify: true}))
         .pipe(gulp.dest(tmp.css));
 });
 
@@ -158,22 +172,30 @@ gulp.task('compile-lib', function() {
 
 
 // task lint
-gulp.task('lint-css', ['compile-abouveDefault', 'compile-style'], function() {
+gulp.task('lint-css', function() {
     csslint.addFormatter('csslint-stylish');
     
     return gulp.src([
             srcScss.base, 
+            srcScss.layout,
             srcScss.module, 
             srcScss.state,
             srcScss.theme,
-            srcScss.layout,
         ])
-        .pipe(sass({outputStyle: 'expanded'}).on('error', sass.logError))
+        .pipe(sass({outputStyle: 'expanded'}).on('error', function(err) {
+            notify.onError({
+                title: "Falha na compilação do Sass",
+                message: "Arquivo: " + err.relativePath + '\n' + "Mensagem: " + err.messageOriginal + '\n' + "Linha: " + err.messageFormatted,
+                wait: true
+            })(err);
+        }))
         .pipe(autoprefixer())
         .pipe(gulp.dest(tmp.cssLint))
         .pipe(csslint())
         .pipe(csslint.formatter('stylish'))
 });
+
+
 
 
 
@@ -259,7 +281,7 @@ gulp.task('server-dev', ['build-dev'], function() {
             srcScss.theme,
             '../src/scss/layout/header.scss', 
         ], 
-        ['compile-abouveDefault', 'lint-css']
+        ['compile-abouveDefault']
     );
     gulp.watch(
         [
@@ -305,9 +327,11 @@ gulp.task('set-production', () => environment = 'production');
 
 gulp.task('set-development', () => environment = 'development');
 
+gulp.task('lint', ['lint-css']);
+
 gulp.task('build-dev', ['set-development', 'development-html', 'development-style', 'development-images', 'development-lib']);
 
-gulp.task('build-prod', ['set-production', 'development-html', 'development-style', 'development-images', 'development-lib']);
+gulp.task('build-prod', ['set-production', 'development-html', 'development-style', 'development-images', 'development-lib', 'lint']);
 
 gulp.task('dev', ['server-dev']);
 
