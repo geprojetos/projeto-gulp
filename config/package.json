@@ -10,8 +10,10 @@
     "lint": "gulp lint",
     "dev": "gulp dev",
     "prod": "gulp prod",
-    "start": "concurrently \"npm:clean\" \"npm:dev\"",
-    "build": "concurrently \"npm:clean\" \"npm:prod\""
+    "start": "npm run clean && npm run dev",
+    "build": "npm run clean && npm run prod",
+    "start-w": "concurrently \"npm:clean\" \"npm:dev\"",
+    "build-w": "concurrently \"npm:clean\" \"npm:prod\""
   },
   "keywords": [],
   "author": "",
@@ -33,9 +35,12 @@
     "gulp-imagemin": "^5.0.3",
     "gulp-inline-source": "^3.2.0",
     "gulp-jade": "^1.1.0",
+    "gulp-jshint": "^2.1.0",
     "gulp-notify": "^3.2.0",
     "gulp-plumber": "^1.2.0",
     "gulp-sass": "^4.0.1",
-    "gulp-uglify": "^3.0.1"
+    "gulp-uglify": "^3.0.1",
+    "jshint": "^2.10.1",
+    "jshint-stylish": "^2.2.1"
   }
 }

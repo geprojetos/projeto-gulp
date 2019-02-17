@@ -14,15 +14,17 @@ var gulp            = require('gulp'),
     gulpIf          = require('gulp-if'),
     imagemin        = require('gulp-imagemin'),
     uglify          = require('gulp-uglify'),
+    jshint          = require('gulp-jshint'),
+    stylish         = require('jshint-stylish'),
     clean           = require('gulp-clean');
 
     
 // var environment = "development";
-function dev () {
+function dev() {
     return environment === 'development';
 };
 
-function prod () {
+function prod() {
     return environment === 'production';
 };
 
@@ -47,8 +49,9 @@ const srcImages = {
 };
 
 const srcJs = {
-    inline: ['../src/js/inline/*.js'],
-    lib: ['../src/lib/*.js']
+    lib: '../src/lib/*.js',
+    inline: '../src/js/inline/*.js',
+    jsApp: '../src/js/app/**/*.js'
 }
 
 // tmp
@@ -63,6 +66,8 @@ const tmp = {
     imagesAll: '../public/_tmp/_images/**/*',
     js: '../public/_tmp/_js',
     jsInline: '../public/_tmp/_js/inline.js',
+    jsApp: '../public/_tmp/_js/_app/',
+    jsAppAll: '../public/_tmp/_js/_app/**/*.js',
     lib: '../public/_tmp/_lib/',
     libAll: '../public/_tmp/_lib/*.js'
 };
@@ -74,6 +79,7 @@ const watch = {
     styleCss: tmp.styleCss,
     images: tmp.imagesAll,
     jsInline: tmp.jsInline,
+    jsApp: tmp.jsAppAll,
     lib: tmp.lib
 };
 
@@ -81,9 +87,7 @@ const watch = {
 const development = {
     folder: '../public/',
     all: '../public/**/*',
-    html: '../public/*.html',
     css: '../public/css/',
-    cssAll: '../public/css/*.css',
     images: '../public/images',
     js: '../public/js',
     lib: '../public/lib'
@@ -93,6 +97,7 @@ const build = {
     folder: '../build/',
     css: '../build/css',
     images: '../build/images',
+    js: '../build/js',
     lib: '../build/lib'
 };
 
@@ -101,7 +106,7 @@ const build = {
 
 // task clear
 gulp.task('clean', function() {
-    return gulp.src([development.folder, build.folder])
+    gulp.src([development.folder, build.folder])
         .pipe(clean({force: true}))
 });
 
@@ -113,7 +118,7 @@ gulp.task('compile-jade', function () {
     return gulp.src(srcJade.pages)
         .pipe(plumber({ errorHandler: function(err) {
             notify.onError({
-                title: "Falha na compilação do Jade",
+                title: "Falha na compilação do JADE",
                 message: "Arquivo: " + err.path + '\n' + "Mensagem: " + err.message,
                 wait: true
             })(err);
@@ -127,7 +132,7 @@ gulp.task('compile-abouveDefault', function(){
     return gulp.src(srcScss.abouveDefault)
         .pipe(sass({outputStyle: 'expanded'}).on('error', function(err) {
             notify.onError({
-                title: "Falha na compilação do Sass",
+                title: "Falha na compilação do SASS",
                 message: "Arquivo: " + err.relativePath + '\n' + "Mensagem: " + err.messageOriginal + '\n' + "Linha: " + err.messageFormatted,
                 wait: true
             })(err);
@@ -141,7 +146,7 @@ gulp.task('compile-style', function(){
     return gulp.src(srcScss.style)
         .pipe(sass({outputStyle: 'expanded'}).on('error', function(err) {
             notify.onError({
-                title: "Falha na compilação do Sass",
+                title: "Falha na compilação do SASS",
                 message: "Arquivo: " + err.relativePath + '\n' + "Mensagem: " + err.messageOriginal,
                 wait: true
             })(err);
@@ -158,9 +163,31 @@ gulp.task('compile-images', function() {
 
 gulp.task('compile-jsInline', function() {
     return gulp.src(srcJs.inline)
-        .pipe(plumber())
+        .pipe(jshint())
+        .pipe(jshint.reporter(function(err) {
+            notify.onError({
+                title: "Falha na compilação do JAVASCRIPT",
+                message: "\n" + "Verifique o erro no console",
+                wait: true
+            })(err);
+        }))
+        .pipe(jshint.reporter(stylish))
         .pipe(concat('inline.js'))
         .pipe(gulp.dest(tmp.js))
+});
+
+gulp.task('compile-jsApp', function() {
+    return gulp.src(srcJs.jsApp)
+        .pipe(jshint())
+        .pipe(jshint.reporter(function(err) {
+            notify.onError({
+                title: "Falha na compilação do JAVASCRIPT",
+                message: "\n" + "Verifique o erro no console",
+                wait: true
+            })(err);
+        }))
+        .pipe(jshint.reporter(stylish))        
+        .pipe(gulp.dest(tmp.jsApp))
 });
 
 gulp.task('compile-lib', function() {
@@ -184,7 +211,7 @@ gulp.task('lint-css', function() {
         ])
         .pipe(sass({outputStyle: 'expanded'}).on('error', function(err) {
             notify.onError({
-                title: "Falha na compilação do Sass",
+                title: "Falha na compilação do SASS",
                 message: "Arquivo: " + err.relativePath + '\n' + "Mensagem: " + err.messageOriginal + '\n' + "Linha: " + err.messageFormatted,
                 wait: true
             })(err);
@@ -193,6 +220,13 @@ gulp.task('lint-css', function() {
         .pipe(gulp.dest(tmp.cssLint))
         .pipe(csslint())
         .pipe(csslint.formatter('stylish'))
+        .pipe(csslint.formatter(function(err) {
+            notify.onError({
+                title: "Aviso para os seus CSS",
+                message: "Seus arquivos CSS foram compilados, mas pode ser realizado melhorias." + "\n" + "Verique no console as instruções!",
+                wait: true
+            })(err);
+        }))
 });
 
 
@@ -233,6 +267,14 @@ gulp.task('development-lib', ['compile-lib'], function() {
         .pipe(gulpIf(prod(), gulp.dest(build.lib)))
 });
 
+gulp.task('development-jsApp', ['compile-jsApp'], function() {
+    return gulp.src(tmp.jsAppAll)
+        .pipe(gulpIf(dev(), gulp.dest(development.js)))
+
+        .pipe(gulpIf(prod(), uglify()))
+        .pipe(gulpIf(prod(), gulp.dest(build.js)))
+});
+
 
 
 
@@ -255,10 +297,15 @@ gulp.task('watch-images', function() {
 });
 
 gulp.task('watch-jsInline', function() {
-    return gulp.src(tmp.jsInline)
+    return gulp.src(watch.jsInline)
         .pipe(gulp.dest(development.js))
 });
 
+
+gulp.task('watch-jsApp', function() {
+    return gulp.src(watch.jsApp)
+        .pipe(gulp.dest(development.js))
+});
 
 
 
@@ -279,6 +326,7 @@ gulp.task('server-dev', ['build-dev'], function() {
             srcScss.module, 
             srcScss.state,
             srcScss.theme,
+            srcScss.abouveDefault,
             '../src/scss/layout/header.scss', 
         ], 
         ['compile-abouveDefault']
@@ -297,17 +345,16 @@ gulp.task('server-dev', ['build-dev'], function() {
 
     gulp.watch(srcImages.all, ['compile-images']);
     gulp.watch(srcJs.inline, ['compile-jsInline']);
+    gulp.watch(srcJs.jsApp, ['compile-jsApp']);
 
     // watch _tmp
     gulp.watch([watch.html, watch.abouveCss, watch.jsInline], ['watch-html']);
     gulp.watch([watch.styleCss], ['watch-style']);
     gulp.watch(watch.images, ['watch-images']);
+    gulp.watch(watch.jsApp, ['watch-jsApp']);
 
     // reload
-    gulp.watch([
-            development.html, 
-            development.cssAll
-        ]).on('change', browserSync.reload)
+    gulp.watch([development.all]).on('change', browserSync.reload)
 });
 
 gulp.task('server-prod', ['build-prod'], function() {
@@ -329,9 +376,9 @@ gulp.task('set-development', () => environment = 'development');
 
 gulp.task('lint', ['lint-css']);
 
-gulp.task('build-dev', ['set-development', 'development-html', 'development-style', 'development-images', 'development-lib']);
+gulp.task('build-dev', ['set-development', 'development-html', 'development-style', 'development-images', 'development-lib', 'development-jsApp', 'lint']);
 
-gulp.task('build-prod', ['set-production', 'development-html', 'development-style', 'development-images', 'development-lib', 'lint']);
+gulp.task('build-prod', ['set-production', 'development-html', 'development-style', 'development-images', 'development-lib', 'development-jsApp', 'lint']);
 
 gulp.task('dev', ['server-dev']);
 
