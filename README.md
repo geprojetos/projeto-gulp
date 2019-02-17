@@ -13,6 +13,7 @@
 - a pasta **src/jade**
   - local onde ficaram todos os arquivos referente ao nosso html, utilizando o [Jade](http://jade-lang.com/) como sintaxe
   - e para cada arquivo criado na pasta **src/jade/pages/home/templates** deve ser importando dentro do arquivo src/jade/pages/home/index.jade, lembrando que para isso se tratando da página index
+  - e para cada página nova utilizar a mesma estrutra de pastas utilizada na home
 - a pasta **src/js/inline**
   - local onde ficaram todos os arquivos JavaScripts que ficaram inline em nosso projeto
 - a pasta **src/lib**
@@ -42,6 +43,9 @@ npm run build
 ```
 - essa pasta contém os arquivos que foram compilados da pasta src, porém com todos os arquivos minificados prontos para serem enviados para a produção
 
+
+### A pasta briefing: 
+- esta pasta você pode colocar tudo que se refere as instruções do projeto, incluindo o psd
 
 
 ## Instalando as dependências do projeto:
