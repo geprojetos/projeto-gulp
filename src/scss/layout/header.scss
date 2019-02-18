@@ -5,20 +5,20 @@ body {
 }
 
 .l-header-wrapper {
+    left: 50%;
+    max-width: 500px;
     padding: 2em;
     position: absolute;
     top: 50%;
-    left: 50%;
     transform: translate(-50%, -50%);
-    max-width: 500px;
     width: 100%;
 }
 
 .l-header-title {
     color: $header-title;
     font-size: $font-40;
-    text-align: center;
     margin-bottom: 1.5em;
+    text-align: center;
 }
 
 .l-header-content {

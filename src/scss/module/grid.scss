@@ -2,14 +2,14 @@
 
 @media(min-width: #{$small}) {
     .m-container {
-        max-width: auto;
         margin: 0 auto;
+        width: 100%;
     }
 
     .m-col-1, .m-col-2, .m-col-3, .m-col-4, .m-col-5, .m-col-6, .m-col-7, .m-col-8, .m-col-9, .m-col-10, .m-col-11, .m-col-12 {
         display: block;
-        width: 100%;
         padding: .625em;
+        width: 100%;
     }
 }
 
@@ -17,8 +17,8 @@
 
     .m-col-1, .m-col-2, .m-col-3, .m-col-4, .m-col-5, .m-col-6, .m-col-7, .m-col-8, .m-col-9, .m-col-10, .m-col-11, .m-col-12 {
         display: inline-block;
-        vertical-align: top;
         margin-right: -4px;
+        vertical-align: top;
         width: 50%;
     }
 }

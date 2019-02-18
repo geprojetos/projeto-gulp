@@ -217,16 +217,16 @@ gulp.task('lint-css', function() {
             })(err);
         }))
         .pipe(autoprefixer())
-        .pipe(gulp.dest(tmp.cssLint))
         .pipe(csslint())
         .pipe(csslint.formatter('stylish'))
         .pipe(csslint.formatter(function(err) {
             notify.onError({
-                title: "Aviso para os seus CSS",
-                message: "Seus arquivos CSS foram compilados, mas pode ser realizado melhorias." + "\n" + "Verique no console as instruções!",
+                title: "Aviso para os seus SCSS",
+                message: "Seus arquivos SCSS foram compilados, mas pode ser realizado melhorias." + "\n" + "Verique no console as instruções!" + "\n" + "Considerar arquivo original .scss",
                 wait: true
             })(err);
         }))
+        // .pipe(gulp.dest(tmp.cssLint))
 });
 
 
