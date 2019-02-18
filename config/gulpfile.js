@@ -52,7 +52,14 @@ const srcJs = {
     lib: '../src/lib/*.js',
     inline: '../src/js/inline/*.js',
     jsApp: '../src/js/app/**/*.js'
-}
+};
+
+const srcPWA = {
+    applicationCache: '../src/application-cache.manifest',
+    install: '../src/install.manifest',
+    sw: '../src/service-workers.js',
+    register: '../src/js/service-worker/register-sw.js'
+};
 
 // tmp
 const tmp = {
@@ -80,7 +87,8 @@ const watch = {
     images: tmp.imagesAll,
     jsInline: tmp.jsInline,
     jsApp: tmp.jsAppAll,
-    lib: tmp.lib
+    lib: tmp.lib,
+    pwa: [srcPWA.applicationCache, srcPWA.install, srcPWA.sw]
 };
 
 // development
@@ -233,6 +241,25 @@ gulp.task('lint-css', function() {
 
 
 
+// task pwa
+gulp.task('manifest', function() {
+    return gulp.src([srcPWA.applicationCache, srcPWA.install])
+        .pipe(gulpIf(dev(), gulp.dest(development.folder)))  
+});
+
+gulp.task('service-worker', function() {
+    return gulp.src(srcPWA.sw)
+        .pipe(gulpIf(dev(), gulp.dest(development.folder)))
+});
+
+gulp.task('register-sw', function() {
+    return gulp.src(srcPWA.register)
+        .pipe(gulpIf(dev(), gulp.dest(development.js)))
+})
+
+
+
+
 // task development
 gulp.task('development-html', ['compile-jade', 'compile-abouveDefault', 'compile-jsInline'], function () {
     return gulp.src(tmp.htmlAll)
@@ -301,10 +328,14 @@ gulp.task('watch-jsInline', function() {
         .pipe(gulp.dest(development.js))
 });
 
-
 gulp.task('watch-jsApp', function() {
     return gulp.src(watch.jsApp)
         .pipe(gulp.dest(development.js))
+});
+
+gulp.task('watch-manifest', function() {
+    return gulp.src(watch.pwa)
+        .pipe(gulp.dest(development.folder))
 });
 
 
@@ -352,6 +383,7 @@ gulp.task('server-dev', ['build-dev'], function() {
     gulp.watch([watch.styleCss], ['watch-style']);
     gulp.watch(watch.images, ['watch-images']);
     gulp.watch(watch.jsApp, ['watch-jsApp']);
+    gulp.watch([watch.pwa], ['watch-manifest']);
 
     // reload
     gulp.watch([development.all]).on('change', browserSync.reload)
@@ -376,7 +408,9 @@ gulp.task('set-development', () => environment = 'development');
 
 gulp.task('lint', ['lint-css']);
 
-gulp.task('build-dev', ['set-development', 'development-html', 'development-style', 'development-images', 'development-lib', 'development-jsApp', 'lint']);
+gulp.task('pwa', ['manifest', 'service-worker', 'register-sw']);
+
+gulp.task('build-dev', ['set-development', 'development-html', 'development-style', 'development-images', 'development-lib', 'development-jsApp', 'lint', 'pwa']);
 
 gulp.task('build-prod', ['set-production', 'development-html', 'development-style', 'development-images', 'development-lib', 'development-jsApp', 'lint']);
 

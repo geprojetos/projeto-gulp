@@ -1,13 +1,16 @@
 <!DOCTYPE html>
-html(lang="pt-br")
+html(lang="pt-br", manifest="application-cache.manifest")
     head
         meta(charset="UTF-8")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
         meta(http-equiv="X-UA-Compatible", content="ie=edge")
         title Modelo de projeto utilizando Gulp
         
+        //- ativar a instalação do site através do manifest
+        link(rel="manifest", href="install.manifest")
+
         //- preload de font
-        //- link(rel="preload", href="fonts/font.txt", as="font", type="font/ttf")
+        //- link(rel="preload", href="", as="font", type="font/ttf")
 
         //- preload image
         link(rel="preload", as="image" href="images/logo-gulp.png")

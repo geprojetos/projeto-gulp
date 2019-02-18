@@ -1,0 +1,12 @@
+CACHE MANIFEST
+
+#v5
+
+CACHE:
+css/style.css
+lib/csspreload.js
+lib/loadcss.js
+images/logo-gulp.png
+
+NETWORK:
+*
