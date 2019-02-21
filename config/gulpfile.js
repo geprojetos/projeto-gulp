@@ -52,7 +52,11 @@ const srcJs = {
     lib: '../src/lib/*.js',
     inline: '../src/js/inline/*.js',
     jsApp: '../src/js/app/**/*.js'
-}
+};
+
+const srcFonts = {
+    fontsAll: '../src/fonts/**/*'
+};
 
 // tmp
 const tmp = {
@@ -90,7 +94,8 @@ const development = {
     css: '../public/css/',
     images: '../public/images',
     js: '../public/js',
-    lib: '../public/lib'
+    lib: '../public/lib',
+    font: '../public/fonts'
 };
 
 const build = {
@@ -98,7 +103,8 @@ const build = {
     css: '../build/css',
     images: '../build/images',
     js: '../build/js',
-    lib: '../build/lib'
+    lib: '../build/lib',
+    font: '../build/fonts'
 };
 
 
@@ -275,6 +281,12 @@ gulp.task('development-jsApp', ['compile-jsApp'], function() {
         .pipe(gulpIf(prod(), gulp.dest(build.js)))
 });
 
+gulp.task('development-fonts', function() {
+    return gulp.src(srcFonts.fontsAll)
+        .pipe(gulpIf(dev(), gulp.dest(development.font)))
+
+        .pipe(gulpIf(prod(), gulp.dest(build.font)));
+});
 
 
 
@@ -376,9 +388,9 @@ gulp.task('set-development', () => environment = 'development');
 
 gulp.task('lint', ['lint-css']);
 
-gulp.task('build-dev', ['set-development', 'development-html', 'development-style', 'development-images', 'development-lib', 'development-jsApp', 'lint']);
+gulp.task('build-dev', ['set-development', 'development-html', 'development-style', 'development-images', 'development-lib', 'development-jsApp', 'lint', 'development-fonts']);
 
-gulp.task('build-prod', ['set-production', 'development-html', 'development-style', 'development-images', 'development-lib', 'development-jsApp', 'lint']);
+gulp.task('build-prod', ['set-production', 'development-html', 'development-style', 'development-images', 'development-lib', 'development-jsApp', 'lint', 'development-fonts']);
 
 gulp.task('dev', ['server-dev']);
 
