@@ -1,5 +1,5 @@
 .directory
-config/node_modules/**/*
-config/package-lock.json
+app/config/node_modules/**/*
+app/config/package-lock.json
 public/**/*
 build/**/*

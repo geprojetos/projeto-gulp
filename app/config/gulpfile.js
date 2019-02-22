@@ -60,20 +60,20 @@ const srcFonts = {
 
 // tmp
 const tmp = {
-    html: '../public/_tmp/',
-    htmlAll: '../public/_tmp/*.html',
-    css: '../public/_tmp/_css/',
-    cssLint: '../public/_tmp/_lint/',
-    abouveCss: '../public/_tmp/_css/abouve-default.css',
-    styleCss: '../public/_tmp/_css/style.css',
-    images: '../public/_tmp/_images/',
-    imagesAll: '../public/_tmp/_images/**/*',
-    js: '../public/_tmp/_js',
-    jsInline: '../public/_tmp/_js/inline.js',
-    jsApp: '../public/_tmp/_js/_app/',
-    jsAppAll: '../public/_tmp/_js/_app/**/*.js',
-    lib: '../public/_tmp/_lib/',
-    libAll: '../public/_tmp/_lib/*.js'
+    html: '../../public/_tmp/',
+    htmlAll: '../../public/_tmp/*.html',
+    css: '../../public/_tmp/_css/',
+    cssLint: '../../public/_tmp/_lint/',
+    abouveCss: '../../public/_tmp/_css/abouve-default.css',
+    styleCss: '../../public/_tmp/_css/style.css',
+    images: '../../public/_tmp/_images/',
+    imagesAll: '../../public/_tmp/_images/**/*',
+    js: '../../public/_tmp/_js',
+    jsInline: '../../public/_tmp/_js/inline.js',
+    jsApp: '../../public/_tmp/_js/_app/',
+    jsAppAll: '../../public/_tmp/_js/_app/**/*.js',
+    lib: '../../public/_tmp/_lib/',
+    libAll: '../../public/_tmp/_lib/*.js'
 };
 
 // watch
@@ -89,22 +89,22 @@ const watch = {
 
 // development
 const development = {
-    folder: '../public/',
-    all: '../public/**/*',
-    css: '../public/css/',
-    images: '../public/images',
-    js: '../public/js',
-    lib: '../public/lib',
-    font: '../public/fonts'
+    folder: '../../public/',
+    all: '../../public/**/*',
+    css: '../../public/css/',
+    images: '../../public/images',
+    js: '../../public/js',
+    lib: '../../public/lib',
+    font: '../../public/fonts'
 };
 
 const build = {
-    folder: '../build/',
-    css: '../build/css',
-    images: '../build/images',
-    js: '../build/js',
-    lib: '../build/lib',
-    font: '../build/fonts'
+    folder: '../../build/',
+    css: '../../build/css',
+    images: '../../build/images',
+    js: '../../build/js',
+    lib: '../../build/lib',
+    font: '../../build/fonts'
 };
 
 
